@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WeatherProvider>().fetchWeather("Astana");
+      context.read<WeatherProvider>().fetchWeather("Almaty");
     });
   }
 
