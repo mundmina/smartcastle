@@ -46,7 +46,12 @@ class _HomePageState extends State<HomePage> {
                   ? CircularProgressIndicator()
                   : provider.error != null
                   ? Text(provider.error!)
-                  : WeatherCard(weatherModel: provider.weather!),
+                  : provider.weather != null
+                  ? WeatherCard(
+                      weatherModel: provider.weather!,
+                      forecast: provider.forecast,
+                    )
+                  : Text('Ошибка'),
             ),
           ),
         ),
