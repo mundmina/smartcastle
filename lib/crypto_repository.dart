@@ -24,8 +24,8 @@ class CryptoRepository {
     }
   }
 
-  void clearAllFavorites() {
-    favoritesBox.clear();
+  Future<void> clearAllFavorites() async {
+    await favoritesBox.clear();
   }
 
   Future<List<CryptoModel>> fetchCryptoData() async {
