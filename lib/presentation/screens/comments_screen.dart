@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_threads/data/datasourses/local_comment_data_source.dart';
 import 'package:smart_threads/data/respositories/comment_repository_impl.dart';
 import 'package:smart_threads/domain/entities/post.dart';
-import 'package:smart_threads/domain/repositories/comment_repository.dart';
 import 'package:smart_threads/presentation/bloc/comments/comments_cubit.dart';
 import 'package:smart_threads/presentation/bloc/comments/comments_state.dart';
 import 'package:smart_threads/presentation/widgets/comment_input.dart';
@@ -17,12 +16,13 @@ class CommentsScreen extends StatelessWidget {
   static Future<void> show(BuildContext context, Post post) {
     return showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (context) {
         return BlocProvider(
           create: (context) => CommentsCubit(
             CommentRepositoryImpl(LocalCommentDataSource()),
             post.id,
-          ),
+          )..loadComments(),
           child: CommentsScreen(post: post),
         );
       },
@@ -54,7 +54,7 @@ class CommentsScreen extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'Коментарий',
+                  'Комментарии',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
@@ -73,7 +73,9 @@ class CommentsScreen extends StatelessWidget {
                 CircleAvatar(
                   radius: 18,
                   backgroundColor: Colors.grey.shade200,
-                  child: Text(post.id.isNotEmpty ? post.authorId[0] : 'Я'),
+                  child: Text(
+                    post.authorId.isNotEmpty ? post.authorId[0] : 'Я',
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(

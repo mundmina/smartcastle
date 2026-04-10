@@ -29,29 +29,50 @@ class CommentsCubit extends Cubit<CommentsState> {
   //addComment
   Future<void> addComment() async {
     if (!state.canSubmit) return;
+    final inputText = state.inputText.trim();
+    final previousComments = List<Comment>.from(state.comment);
 
     final comment = Comment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       postId: _postId,
       authorId: 'me',
-      content: state.inputText.trim(),
+      content: inputText,
       createdAt: DateTime.now().toIso8601String(),
+    );
+
+    emit(
+      state.copyWith(
+        inputText: '',
+        comment: [...state.comment, comment],
+        status: CommentsStatus.success,
+        errorMessage: null,
+      ),
     );
 
     try {
       await _repository.addComment(comment);
-
+    } catch (e) {
       emit(
         state.copyWith(
-          inputText: '',
-          status: CommentsStatus.success,
-          comment: [...state.comment, comment],
+          inputText: inputText,
+          comment: previousComments,
+          status: CommentsStatus.failure,
+          errorMessage: 'Не удалось отправить комментарий',
         ),
       );
-    } catch (e) {
-      await loadComments();
     }
   }
 
   //input changed
+  void inputChanged(String value) {
+    emit(
+      state.copyWith(
+        inputText: value,
+        status: state.status == CommentsStatus.failure
+            ? CommentsStatus.success
+            : state.status,
+        errorMessage: null,
+      ),
+    );
+  }
 }

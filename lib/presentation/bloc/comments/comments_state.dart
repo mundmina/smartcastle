@@ -8,13 +8,14 @@ enum CommentsStatus { initial, loading, success, failure }
 @freezed
 abstract class CommentsState with _$CommentsState {
   const factory CommentsState({
-   @Default(CommentsStatus.initial) CommentsStatus status,
-   @Default([])  List<Comment> comment,
-   @Default('') String inputText, 
+    @Default(CommentsStatus.initial) CommentsStatus status,
+    @Default([]) List<Comment> comment,
+    @Default('') String inputText,
     String? errorMessage,
   }) = _CommentsState;
 
   const CommentsState._();
 
-  bool get canSubmit => inputText.trim().isNotEmpty;
+  bool get canSubmit =>
+      inputText.trim().isNotEmpty && status != CommentsStatus.loading;
 }
